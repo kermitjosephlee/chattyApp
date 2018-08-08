@@ -4,14 +4,19 @@ import Message from './Message.jsx';
 
 class MessageList extends Component {
   render() {
+    const messageItems = this.props.messageArray.map((messageIndex) =>{
+      return <Message
+        key={messageIndex.id}
+        userName={messageIndex.username}
+        messageContent={messageIndex.content} />
+    });
     return (
       <main className="messages">
-        <div className="message">
-          <Message />
-        </div>
-        <div className="message system">
+        <div>{messageItems}</div>
+        {/* <div className="message system">
           Anonymous1 changed their name to nomnom.
         </div>
+        */}
       </main>
     );
   }
