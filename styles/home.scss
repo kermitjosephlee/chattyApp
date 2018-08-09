@@ -65,6 +65,7 @@ body {
 }
 
 .navbar {
+  display: flex;
   background: honeydew;
   border-bottom: 1px solid black;
   height: 60px;
@@ -76,13 +77,21 @@ body {
 }
 
 .navbar-brand {
+  align-self: flex-start;
   color: inherit;
+  order: 1;
+  flex-grow: 1;
   display: block;
-  float: left;
   font-weight: 700;
   font-size: 28px;
   height: 60px;
   line-height: 60px;
   padding: 0 10px;
   text-decoration: none;
+}
+
+.user-numbers {
+  align-self: flex-end;
+  order: 2;
+  flex-grow: 2;
 }

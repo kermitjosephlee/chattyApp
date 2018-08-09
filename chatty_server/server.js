@@ -22,7 +22,12 @@ wss.broadcast = msg => {
 };
 
 wss.on("connection", ws => {
-  console.log("Client connected");
+  const clientSize = {
+    type: "clientSize",
+    clientSize: wss.clients.size
+  };
+  wss.broadcast(clientSize);
+  console.log("On Connection - userName:", clientSize);
   ws.on("message", message => {
     const msg = JSON.parse(message);
     msg.id = uuid();
@@ -31,7 +36,14 @@ wss.on("connection", ws => {
     wss.broadcast(msg);
   });
 
-  ws.on("close", () => console.log("Client disconnected"));
+  ws.on("close", () => {
+    console.log("Client disconnected");
+    const clientSize = {
+      type: "clientSize",
+      clientSize: wss.clients.size
+    };
+    wss.broadcast(clientSize);
+  });
 });
 
 // **********************************************************
@@ -40,12 +52,10 @@ const messageTypeFilter = msg => {
   switch (msg.type) {
     case "incomingMessage":
       console.log("APP/incomingMessage: " + msg.content);
-      // this.setState({ message });
       break;
     case "postNotification":
       console.log("APP/incomingNotification: " + msg.content);
       msg.type = "incomingNotification";
-      // this.setState({ message });
       break;
     default:
       console.error("*** Unknown Server Side Event Type *** -- " + msg.type);

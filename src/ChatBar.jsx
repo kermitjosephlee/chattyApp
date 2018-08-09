@@ -12,7 +12,7 @@ class ChatBar extends Component {
   onSubmitName = evt => {
     if (evt.key === "Enter") {
       const userName = evt.target.value;
-      console.log("USERNAME: ", userName);
+      // console.log("USERNAME: ", userName);
       this.props.changeUserName(userName);
     }
   };

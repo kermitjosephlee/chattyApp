@@ -8,6 +8,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      clientSize: 0,
       currentUser: { name: "Joe" }, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: [
         {
@@ -66,6 +67,7 @@ class App extends Component {
     this.socket.onmessage = event => {
       const parsedJSON = JSON.parse(event.data);
       const messages = this.state.messages.concat(parsedJSON);
+      console.log("App side Messages:", messages);
 
       switch (parsedJSON.type) {
         case "incomingMessage":
@@ -74,8 +76,11 @@ class App extends Component {
         case "incomingNotification":
           this.setState({ messages });
           break;
+        case "clientSize":
+          this.setState({ clientSize: parsedJSON.clientSize });
+          break;
         default:
-          console.error("*** Unknown Event Type *** -- " + parsedJSON.type);
+          // console.error("*** Unknown Event Type *** -- " + parsedJSON.type);
           throw new Error("Unknown event type: " + parsedJSON.type);
       }
     };
@@ -91,10 +96,11 @@ class App extends Component {
   };
 
   changeUserName = username => {
+    const insertedContent =
+      this.state.currentUser.name + " has changed their name to " + username;
     const newNameChange = {
       type: "postNotification",
-      content:
-        this.state.currentUser.name + " has changed their name to " + username
+      content: insertedContent
     };
     this.socket.send(JSON.stringify(newNameChange));
     this.setState({ currentUser: { name: username } });
@@ -105,8 +111,9 @@ class App extends Component {
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">
-            Chatty
+            ChattyCathy
           </a>
+          <span className="user-numbers">{this.state.clientSize} users</span>
         </nav>
         <ChatBar
           currentUser={this.state.currentUser.name}
