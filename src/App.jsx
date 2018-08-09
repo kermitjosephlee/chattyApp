@@ -8,7 +8,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: { name: "Bob" }, // optional. if currentUser is not defined, it means the user is Anonymous
+      currentUser: { name: "Joe" }, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: [
         {
           type: "incomingMessage",
@@ -48,8 +48,6 @@ class App extends Component {
         }
       ]
     };
-
-    this.addMessage = this.addMessage.bind(this);
   }
   /* where you would put in your data calls aka. AJAX or API... */
   componentDidMount() {
@@ -57,7 +55,6 @@ class App extends Component {
     setTimeout(() => {
       console.log("Simulating incoming message");
       const newMessage = {
-        id: 3,
         username: "Michelle",
         content: "OOO EEE! CAN DO!!!"
       };
@@ -66,20 +63,25 @@ class App extends Component {
     }, 3000);
 
     this.socket = new WebSocket(socketServer);
+    this.socket.onmessage = event => {
+      const parsedJSON = JSON.parse(event.data);
+      console.log("This is coming from APP: ", parsedJSON.content);
+      const messages = this.state.messages.concat(parsedJSON);
+      this.setState({ messages });
+    };
   }
-
-  addMessage(content) {
+  //
+  addMessage = content => {
     const newMessage = {
-      id: 14,
-      username: this.state.currentUser,
+      username: this.state.currentUser.name,
       content: content
     };
+    this.socket.send(JSON.stringify(newMessage));
+  };
 
-    this.socket.send(newMessage);
-
-    // const messages = this.state.messages.concat(newMessage);
-    // this.setState({ messages: messages });
-  }
+  changeUserName = username => {
+    this.setState({ currentUser: { name: username } });
+  };
 
   render() {
     return (
@@ -92,6 +94,7 @@ class App extends Component {
         <ChatBar
           currentUser={this.state.currentUser.name}
           addMessage={this.addMessage}
+          changeUserName={this.changeUserName}
         />
         <MessageList messageArray={this.state.messages} />
       </div>

@@ -5,16 +5,16 @@ class ChatBar extends Component {
     if (evt.key === "Enter") {
       const messageInput = evt.target.value;
       this.props.addMessage(messageInput);
-      event.target.value = "";
+      evt.target.value = "";
     }
   };
 
-  // onSubmitName = evt => {
-  //   if (evt.key === "Enter") {
-  //     const userName = evt.target.value;
-  //     this.props.addMessage()
-  //   }
-  // };
+  onSubmitName = evt => {
+    if (evt.key === "Enter") {
+      const userName = evt.target.value;
+      this.props.changeUserName(userName);
+    }
+  };
 
   render() {
     return (
