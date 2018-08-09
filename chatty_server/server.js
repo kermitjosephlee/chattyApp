@@ -34,18 +34,21 @@ wss.on("connection", ws => {
   ws.on("close", () => console.log("Client disconnected"));
 });
 
+// **********************************************************
+
 const messageTypeFilter = msg => {
   switch (msg.type) {
     case "incomingMessage":
       console.log("APP/incomingMessage: " + msg.content);
-      this.setState({ messages });
+      // this.setState({ message });
       break;
-    case "incomingNotification":
+    case "postNotification":
       console.log("APP/incomingNotification: " + msg.content);
-      this.setState({ messages });
+      msg.type = "incomingNotification";
+      // this.setState({ message });
       break;
     default:
-      console.error("*** Unknown Event Type *** -- " + msg.type);
-      throw new Error("Unknown event type: " + msg.type);
+      console.error("*** Unknown Server Side Event Type *** -- " + msg.type);
+      throw new Error("Unknown server side event type: " + msg.type);
   }
 };

@@ -69,11 +69,9 @@ class App extends Component {
 
       switch (parsedJSON.type) {
         case "incomingMessage":
-          console.log("APP/incomingMessage: " + parsedJSON.content);
           this.setState({ messages });
           break;
         case "incomingNotification":
-          console.log("APP/incomingNotification: " + parsedJSON.content);
           this.setState({ messages });
           break;
         default:
@@ -94,7 +92,7 @@ class App extends Component {
 
   changeUserName = username => {
     const newNameChange = {
-      type: "incomingNotification",
+      type: "postNotification",
       content:
         this.state.currentUser.name + " has changed their name to " + username
     };
