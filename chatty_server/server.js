@@ -11,7 +11,7 @@ const server = express()
 const wss = new WebSocket.Server({ server });
 
 wss.broadcast = msg => {
-  console.log("broadcase msg:", msg);
+  console.log("broadcast msg:", msg);
   wss.clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
       console.log("Socket Side:", msg);
@@ -21,20 +21,31 @@ wss.broadcast = msg => {
   });
 };
 
-// const addMessage = message => ({
-//   id: uuid(),
-//   username: "BOB",
-//   content: message
-// });
-
 wss.on("connection", ws => {
   console.log("Client connected");
   ws.on("message", message => {
     const msg = JSON.parse(message);
     msg.id = uuid();
+    messageTypeFilter(msg);
     console.log("Post Parsing: ", msg);
     wss.broadcast(msg);
   });
 
   ws.on("close", () => console.log("Client disconnected"));
 });
+
+const messageTypeFilter = msg => {
+  switch (msg.type) {
+    case "incomingMessage":
+      console.log("APP/incomingMessage: " + msg.content);
+      this.setState({ messages });
+      break;
+    case "incomingNotification":
+      console.log("APP/incomingNotification: " + msg.content);
+      this.setState({ messages });
+      break;
+    default:
+      console.error("*** Unknown Event Type *** -- " + msg.type);
+      throw new Error("Unknown event type: " + msg.type);
+  }
+};

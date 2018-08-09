@@ -65,14 +65,27 @@ class App extends Component {
     this.socket = new WebSocket(socketServer);
     this.socket.onmessage = event => {
       const parsedJSON = JSON.parse(event.data);
-      console.log("This is coming from APP: ", parsedJSON.content);
       const messages = this.state.messages.concat(parsedJSON);
-      this.setState({ messages });
+
+      switch (parsedJSON.type) {
+        case "incomingMessage":
+          console.log("APP/incomingMessage: " + parsedJSON.content);
+          this.setState({ messages });
+          break;
+        case "incomingNotification":
+          console.log("APP/incomingNotification: " + parsedJSON.content);
+          this.setState({ messages });
+          break;
+        default:
+          console.error("*** Unknown Event Type *** -- " + parsedJSON.type);
+          throw new Error("Unknown event type: " + parsedJSON.type);
+      }
     };
   }
   //
   addMessage = content => {
     const newMessage = {
+      type: "incomingMessage",
       username: this.state.currentUser.name,
       content: content
     };
@@ -80,6 +93,12 @@ class App extends Component {
   };
 
   changeUserName = username => {
+    const newNameChange = {
+      type: "incomingNotification",
+      content:
+        this.state.currentUser.name + " has changed their name to " + username
+    };
+    this.socket.send(JSON.stringify(newNameChange));
     this.setState({ currentUser: { name: username } });
   };
 
