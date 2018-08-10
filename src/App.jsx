@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ChatBar from "./ChatBar.jsx";
 import MessageList from "./MessageList.jsx";
+import colours from "./colours.jsx";
 
 const socketServer = "ws://localhost:3001";
 
@@ -67,7 +68,6 @@ class App extends Component {
     this.socket.onmessage = event => {
       const parsedJSON = JSON.parse(event.data);
       const messages = this.state.messages.concat(parsedJSON);
-      console.log("App side Messages:", messages);
 
       switch (parsedJSON.type) {
         case "incomingMessage":
