@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ChatBar from "./ChatBar.jsx";
 import MessageList from "./MessageList.jsx";
-import colours from "./colours.jsx";
+// import colours from "./colours.jsx";
 
 const socketServer = "ws://localhost:3001";
 
@@ -10,13 +10,15 @@ class App extends Component {
     super(props);
     this.state = {
       clientSize: 0,
+      userColor: "black",
       currentUser: { name: "Joe" }, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: [
         {
           type: "incomingMessage",
           content:
             "I won't be impressed with technology until I can download food.",
-          username: "Anonymous1"
+          username: "Anonymous1",
+          bgcolor: "honeydew"
         },
         {
           type: "incomingNotification",
@@ -26,23 +28,27 @@ class App extends Component {
           type: "incomingMessage",
           content:
             "I wouldn't want to download Kraft Dinner. I'd be scared of cheese packet loss.",
-          username: "Anonymous2"
+          username: "Anonymous2",
+          bgcolor: "honeydew"
         },
         {
           type: "incomingMessage",
           content: "...",
-          username: "nomnom"
+          username: "nomnom",
+          bgcolor: "honeydew"
         },
         {
           type: "incomingMessage",
           content:
             "I'd love to download a fried egg, but I'm afraid encryption would scramble it",
-          username: "Anonymous2"
+          username: "Anonymous2",
+          bgcolor: "honeydew"
         },
         {
           type: "incomingMessage",
           content: "This isn't funny. You're not funny",
-          username: "nomnom"
+          username: "nomnom",
+          bgcolor: "honeydew"
         },
         {
           type: "incomingNotification",
@@ -51,7 +57,7 @@ class App extends Component {
       ]
     };
   }
-  /* where you would put in your data calls aka. AJAX or API... */
+
   componentDidMount() {
     console.log("componentDidMount <App />");
     setTimeout(() => {
@@ -79,6 +85,11 @@ class App extends Component {
         case "clientSize":
           this.setState({ clientSize: parsedJSON.clientSize });
           break;
+        case "userColor":
+          this.setState({ userColor: parsedJSON.textcolor });
+          this.setState({ bgcolor: parsedJSON.backgroundcolor });
+          break;
+
         default:
           // console.error("*** Unknown Event Type *** -- " + parsedJSON.type);
           throw new Error("Unknown event type: " + parsedJSON.type);
@@ -90,8 +101,11 @@ class App extends Component {
     const newMessage = {
       type: "incomingMessage",
       username: this.state.currentUser.name,
-      content: content
+      content: content,
+      userColor: this.state.userColor,
+      bgcolor: this.state.bgcolor
     };
+    console.log("new message: ", JSON.stringify(newMessage));
     this.socket.send(JSON.stringify(newMessage));
   };
 
