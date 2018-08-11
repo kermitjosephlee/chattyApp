@@ -11,7 +11,7 @@ class App extends Component {
     this.state = {
       clientSize: 0,
       userColor: "black",
-      currentUser: { name: "Joe" }, // optional. if currentUser is not defined, it means the user is Anonymous
+      currentUser: { name: "Cathy" },
       messages: [
         {
           type: "incomingMessage",
