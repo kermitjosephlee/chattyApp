@@ -11,19 +11,6 @@ const server = express()
 
 const wss = new WebSocket.Server({ server });
 
-const textColorMaker = () => {
-  let textColor = tinycolor.random().toHexString();
-  return textColor;
-};
-
-const complementaryTextColorMaker = textColor => {
-  let complementaryTextColor = tinycolor(textColor)
-    .complement()
-    .setAlpha(0.1)
-    .toHex8String();
-  return complementaryTextColor;
-};
-
 wss.broadcast = msg => {
   wss.clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
@@ -80,4 +67,17 @@ const messageTypeFilter = msg => {
       console.error("*** Unknown Server Side Event Type *** -- " + msg.type);
       throw new Error("Unknown server side event type: " + msg.type);
   }
+};
+
+const textColorMaker = () => {
+  let textColor = tinycolor.random().toHexString();
+  return textColor;
+};
+
+const complementaryTextColorMaker = textColor => {
+  let complementaryTextColor = tinycolor(textColor)
+    .complement()
+    .setAlpha(0.1)
+    .toHex8String();
+  return complementaryTextColor;
 };
