@@ -11,6 +11,7 @@ const server = express()
 
 const wss = new WebSocket.Server({ server });
 
+// broadcasts stringified JSON packages to all users
 wss.broadcast = msg => {
   wss.clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
@@ -21,15 +22,18 @@ wss.broadcast = msg => {
 };
 
 wss.on("connection", ws => {
+  // broadcasts current number of clients to all users
   const clientSize = {
     type: "clientSize",
     clientSize: wss.clients.size
   };
   wss.broadcast(clientSize);
 
+  // creates color pair for each new connection
   let textColor = textColorMaker();
   let complementaryTextColor = complementaryTextColorMaker(textColor);
 
+  // sends color pair information to all users
   const userColor = {
     type: "userColor",
     textcolor: textColor,
@@ -38,6 +42,7 @@ wss.on("connection", ws => {
   const userColorStr = JSON.stringify(userColor);
   ws.send(userColorStr);
 
+  // sends new messages with unique id to all users
   ws.on("message", message => {
     const msg = JSON.parse(message);
     msg.id = uuid();
@@ -45,6 +50,7 @@ wss.on("connection", ws => {
     wss.broadcast(msg);
   });
 
+  // updates number of clients connected on closed connections
   ws.on("close", () => {
     const clientSize = {
       type: "clientSize",
@@ -56,6 +62,7 @@ wss.on("connection", ws => {
 
 // **********************************************************
 
+// changes postNotifications from one user to an incomingNotification for broadcasting
 const messageTypeFilter = msg => {
   switch (msg.type) {
     case "incomingMessage":
@@ -69,11 +76,13 @@ const messageTypeFilter = msg => {
   }
 };
 
+// creates a random color using tinycolor for userName text color
 const textColorMaker = () => {
   let textColor = tinycolor.random().toHexString();
   return textColor;
 };
 
+// takes textColor and returns a muted complementary color for the background of userName
 const complementaryTextColorMaker = textColor => {
   let complementaryTextColor = tinycolor(textColor)
     .complement()

@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import ChatBar from "./ChatBar.jsx";
 import MessageList from "./MessageList.jsx";
-// import colours from "./colours.jsx";
 
 const socketServer = "ws://localhost:3001";
 
 class App extends Component {
   constructor(props) {
     super(props);
+    // initializes messages on boot
     this.state = {
       clientSize: 0,
       userColor: "black",
@@ -66,6 +66,7 @@ class App extends Component {
         username: "Michelle",
         content: "OOO EEE! CAN DO!!!"
       };
+      // updates state and messages with new message
       const messages = this.state.messages.concat(newMessage);
       this.setState({ messages: messages });
     }, 3000);
@@ -75,6 +76,7 @@ class App extends Component {
       const parsedJSON = JSON.parse(event.data);
       const messages = this.state.messages.concat(parsedJSON);
 
+      // filters received reparsed stringified JSONs by message type
       switch (parsedJSON.type) {
         case "incomingMessage":
           this.setState({ messages });
@@ -91,12 +93,11 @@ class App extends Component {
           break;
 
         default:
-          // console.error("*** Unknown Event Type *** -- " + parsedJSON.type);
           throw new Error("Unknown event type: " + parsedJSON.type);
       }
     };
   }
-  //
+  // sends new message to sockets server as stringified JSON
   addMessage = content => {
     const newMessage = {
       type: "incomingMessage",
@@ -109,6 +110,7 @@ class App extends Component {
     this.socket.send(JSON.stringify(newMessage));
   };
 
+  // changes user name and sends alert to sockets server for broadcast
   changeUserName = username => {
     const insertedContent =
       this.state.currentUser.name + " has changed their name to " + username;

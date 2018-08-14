@@ -4,10 +4,10 @@ class Message extends Component {
   render() {
     let interimName = this.props.userName;
     let interimStyle = {};
-    console.log(this.props);
 
+    // filters if there is a valid userName, prints anon if none
     if (!this.props.userName) {
-      interimName = "*** Notification ***";
+      interimName = "anonymous";
       interimStyle = { fontStyle: "italic" };
     }
     return (
